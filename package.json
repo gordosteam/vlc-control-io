@@ -1,0 +1,29 @@
+{
+  "name": "vlc-control-io",
+  "version": "0.0.1",
+  "description": "Control your VLC with Node. JS with socket.io + vlc-control-node module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gordosteam/vlc-control-io.git"
+  },
+  "keywords": [
+    "control",
+    "vlc",
+    "node",
+    "socket.io",
+    "vlc-control-node"
+  ],
+  "author": "Fernando Derkoski <brilvio@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/gordosteam/vlc-control-io/issues"
+  },
+  "dependencies": {
+    "vlc-control-node": "0.0.1",
+    "socket.io": "~1.2.1"
+  }
+}
