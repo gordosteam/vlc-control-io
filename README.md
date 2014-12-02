@@ -20,6 +20,7 @@ socket.emit('cfg', {
 To use you have to emit the commands
 
 Examples:
+
 **Add to PlayList and Play**
 ```javascript
 socket.emit('command', {
@@ -39,11 +40,11 @@ socket.emit('command', {
 			id: 0
 		}
 	});
-```javascript
+```
 **Stop**
 ```javascript
 socket.emit('command', {
 		command : 'stop'
 	});
-```javascript
+```
 
