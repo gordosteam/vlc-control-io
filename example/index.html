@@ -6,12 +6,12 @@
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		<script>
 			$(function() {
-				var socket = io('192.168.1.103:3500');
+				var socket = io('192.168.25.168:3500');
 
 				socket.on('conectado', function(msg) {
 					socket.emit('cfg', {
-						ip : '192.168.1.103',
-						port : 8080,
+						ip : '192.168.25.168',
+						port : 8081,
 						user : '',
 						password : 'asd123'
 					});
@@ -22,7 +22,8 @@
 				});
 
 				socket.on('sucess', function(msg) {
-					//$('#info').text(msg);
+					$('#info').text(msg);
+					//console.log(msg);
 					var obj = JSON.parse(msg);
 
 					if ((obj) && (obj.information) && (obj.information.category) && (obj.information.category.meta) && (obj.information.category.meta.artwork_url)) {
@@ -52,6 +53,7 @@
 	</head>
 
 	<body>
+		<div id='info'></div></br>
 		<div id='artist'></div></br>
 		<div id='music'></div></br>
 		<img id='img' src=""/></br>

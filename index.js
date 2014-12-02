@@ -3,7 +3,6 @@ var vlcControl = require('vlc-control-node');
 var io = require('socket.io')(http);
 var started = false;
 var net = require('net');
-//var server = null;
 
 io.on('connection', function(socket) {
 	console.log('a user connected');
@@ -12,62 +11,6 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
 	});
-
-	var server = net.createServer(function(c) {//'connection' listener
-		c.on("error", function(err) {
-
-		});
-		c.on('end', function() {
-			console.log('Client Disconnected');
-		});
-
-		c.on('data', function(data) {
-			try {
-			  var obj = JSON.parse(data.toString());
-			} catch(err) {
-				var obj = null;
-			};
-			  
-			if ((obj) && (obj.information) && (obj.information.category) && (obj.information.category.meta) && (obj.information.category.meta.artwork_url)) {
-				// console.log(obj.information.category.meta.artwork_url);
-				var file = obj.information.category.meta.artwork_url.substring(8);
-				// console.log(obj.information.category.meta.artwork_url.substring(8));
-				file = file.replace(/\//g, '\\');
-				file = file.replace(/%20/g, ' ');
-				var newFile = __dirname + '\\imgs\\';
-				//console.log(file);
-				//console.log(newFile);
-				if (file) {
-					var startIndex = (file.indexOf('\\') >= 0 ? file.lastIndexOf('\\') : file.lastIndexOf('/'));
-					var filename = file.substring(startIndex);
-					if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-						filename = filename.substring(1);
-					}
-				}
-				obj.information.category.meta.artwork_url = '../imgs/' + filename;
-				require('child_process').exec('xcopy "' + file + '" ' + newFile + ' /hqyi', function() {
-					socket.broadcast.emit('sucess', JSON.stringify(obj));
-				});
-
-			} else if (obj) {
-				socket.broadcast.emit('sucess', JSON.stringify(obj));
-			}
-
-		});
-	});
-
-	try {
-		server.listen(8124, function() {//'listening' listener
-
-		});
-		server.on('error', function(e) {
-			//console.log(e);
-		});
-
-	} catch (err) {
-		console.log(err);
-
-	};
 
 	socket.on('conectado', function() {
 
@@ -90,6 +33,63 @@ io.on('connection', function(socket) {
 			socket.emit('fault', 'You have to initialize the VlcControl module with the event "cfg"!');
 		}
 	});
+	
+	var server = net.createServer(function(c) {//'connection' listener
+	c.on("error", function(err) {
+
+	});
+	c.on('end', function() {
+		console.log('Client Disconnected');
+	});
+
+	c.on('data', function(data) {
+		try {
+			var obj = JSON.parse(data.toString());
+		} catch(err) {
+			var obj = null;
+		};
+		
+
+		if ((obj) && (obj.information) && (obj.information.category) && (obj.information.category.meta) && (obj.information.category.meta.artwork_url)) {
+			// console.log(obj.information.category.meta.artwork_url);
+			var file = obj.information.category.meta.artwork_url.substring(8);
+			// console.log(obj.information.category.meta.artwork_url.substring(8));
+			file = file.replace(/\//g, '\\');
+			file = file.replace(/%20/g, ' ');
+			var newFile = __dirname + '\\imgs\\';
+			//console.log(file);
+			//console.log(newFile);
+			if (file) {
+				var startIndex = (file.indexOf('\\') >= 0 ? file.lastIndexOf('\\') : file.lastIndexOf('/'));
+				var filename = file.substring(startIndex);
+				if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+					filename = filename.substring(1);
+				}
+			}
+			obj.information.category.meta.artwork_url = '../imgs/' + filename;
+			require('child_process').exec('xcopy "' + file + '" ' + newFile + ' /hqyi', function() {
+				socket.broadcast.emit('sucess', JSON.stringify(obj));
+			});
+
+		} else if (obj) {
+			socket.broadcast.emit('sucess', JSON.stringify(obj));
+		}
+
+	});
+});
+
+try {
+	server.listen(8124, function() {//'listening' listener
+
+	});
+	server.on('error', function(e) {
+		//console.log(e);
+	});
+
+} catch (err) {
+	console.log(err);
+
+};
 
 	function parseCommand(msg) {
 		switch(msg.command) {
@@ -147,6 +147,8 @@ io.on('connection', function(socket) {
 	};
 
 });
+
+
 
 http.listen(3500, function() {
 	console.log('listening on *:3500');
