@@ -48,3 +48,5 @@ socket.emit('command', {
 	});
 ```
 
+This commands will return an Object with informations that VLC will return.
+
