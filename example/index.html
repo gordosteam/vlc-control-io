@@ -48,11 +48,27 @@
 						command : 'stop'
 					});
 				});
+				$('#pause').click(function() {
+					socket.emit('command', {
+						command : 'pause'
+					});
+				});
+				$('#previous').click(function() {
+					socket.emit('command', {
+						command : 'previous'
+					});
+				});
+				$('#next').click(function() {
+					socket.emit('command', {
+						command : 'next'
+					});
+				});
 			});
 		</script>
 	</head>
 
 	<body>
+		
 		<div id='info'></div></br>
 		<div id='artist'></div></br>
 		<div id='music'></div></br>
@@ -60,8 +76,18 @@
 		<button id='play'>
 			Play
 		</button>
+		<button id='pause'>
+			Pause
+		</button>
 		<button id='stop'>
 			Stop
 		</button>
+		<button id='previous'>
+			Previous
+		</button>
+		<button id='next'>
+			Next
+		</button>
+		
 	</body>
 </html>
