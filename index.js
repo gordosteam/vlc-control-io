@@ -1,9 +1,11 @@
+var http = require('http').Server();
 var vlcControl = require('vlc-control-node');
 var io = require('socket.io')(http);
 var started = false;
 
 io.on('connection', function(socket) {
 	console.log('a user connected');
+	socket.emit('conectado', 'hello');
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
 	});
@@ -26,16 +28,16 @@ io.on('connection', function(socket) {
 		if (started) {
 			parseCommand(msg);
 		} else {
-			socket.emit('error', 'You have to initialize the VlcControl module with the event "cfg"!');
+			socket.emit('fault', 'You have to initialize the VlcControl module with the event "cfg"!');
 		}
 	});
-	
+
 	function parseCommand(msg) {
 		switch(msg.command) {
 		case 'addAndStart':
-			if (msg.params.noaudio) {
+			if ((msg.params) && (msg.params.noaudio)) {
 				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri, true, false));
-			} else if (msg.params.novideo) {
+			} else if ((msg.params) && (msg.params.novideo)) {
 				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri, false, true));
 			} else {
 				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri));
@@ -45,14 +47,15 @@ io.on('connection', function(socket) {
 			socket.emit('sucess', vlcControl.addToPlaylist(msg.params.uri));
 			break;
 		case 'play':
-			if ((msg.params.id) && (msg.params.id > 0)) {
+
+			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
 				socket.emit('sucess', vlcControl.play(msg.params.id));
 			} else {
 				socket.emit('sucess', vlcControl.play());
 			}
 			break;
 		case 'pause':
-			if ((msg.params.id) && (msg.params.id > 0)) {
+			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
 				socket.emit('sucess', vlcControl.pause(msg.params.id));
 			} else {
 				socket.emit('sucess', vlcControl.pause());
@@ -74,14 +77,18 @@ io.on('connection', function(socket) {
 			socket.emit('sucess', vlcControl.previous());
 			break;
 		case 'delete':
-			if ((msg.params.id) && (msg.params.id > 0)) {
+			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
 				socket.emit('sucess', vlcControl.delete(msg.params.id));
 			}
 			break;
 		default:
-			socket.emit('error', 'Command not recognized!');
+			socket.emit('fault', 'Command not recognized!');
 		}
 	};
 
+});
+
+http.listen(3500, function() {
+	console.log('listening on *:3500');
 });
 

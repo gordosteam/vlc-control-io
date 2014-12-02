@@ -1,0 +1,50 @@
+<!doctype html>
+
+<html>
+	<head>
+		<script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script>
+			$(function() {
+				var socket = io('192.168.1.103:3500');
+
+				socket.on('conectado', function(msg) {
+					socket.emit('cfg', {
+						ip : '192.168.1.103',
+						port : 8080,
+						user : '',
+						password : 'asd123'
+					});
+				});
+
+				socket.on('fault', function(msg) {
+					alert(msg);
+				});
+				
+				socket.on('sucess',function(msg){
+					console.log(msg);
+				});
+
+				$('#play').click(function() {
+					socket.emit('command', {
+						command : 'play'
+					});
+				});
+				$('#stop').click(function() {
+					socket.emit('command', {
+						command : 'stop'
+					});
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<button id='play'>
+			Play
+		</button>
+		<button id='stop'>
+			Stop
+		</button>
+	</body>
+</html>

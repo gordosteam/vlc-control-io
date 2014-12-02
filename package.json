@@ -23,7 +23,7 @@
     "url": "https://github.com/gordosteam/vlc-control-io/issues"
   },
   "dependencies": {
-    "vlc-control-node": "0.0.1",
+    "vlc-control-node": "0.0.4",
     "socket.io": "~1.2.1"
   }
 }
