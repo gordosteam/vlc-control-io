@@ -2,13 +2,72 @@ var http = require('http').Server();
 var vlcControl = require('vlc-control-node');
 var io = require('socket.io')(http);
 var started = false;
+var net = require('net');
+//var server = null;
 
 io.on('connection', function(socket) {
 	console.log('a user connected');
 	socket.emit('conectado', 'hello');
+
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
 	});
+
+	var server = net.createServer(function(c) {//'connection' listener
+		c.on("error", function(err) {
+
+		});
+		c.on('end', function() {
+			console.log('Client Disconnected');
+		});
+
+		c.on('data', function(data) {
+			try {
+			  var obj = JSON.parse(data.toString());
+			} catch(err) {
+				var obj = null;
+			};
+			  
+			if ((obj) && (obj.information) && (obj.information.category) && (obj.information.category.meta) && (obj.information.category.meta.artwork_url)) {
+				// console.log(obj.information.category.meta.artwork_url);
+				var file = obj.information.category.meta.artwork_url.substring(8);
+				// console.log(obj.information.category.meta.artwork_url.substring(8));
+				file = file.replace(/\//g, '\\');
+				file = file.replace(/%20/g, ' ');
+				var newFile = __dirname + '\\imgs\\';
+				//console.log(file);
+				//console.log(newFile);
+				if (file) {
+					var startIndex = (file.indexOf('\\') >= 0 ? file.lastIndexOf('\\') : file.lastIndexOf('/'));
+					var filename = file.substring(startIndex);
+					if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+						filename = filename.substring(1);
+					}
+				}
+				obj.information.category.meta.artwork_url = '../imgs/' + filename;
+				require('child_process').exec('xcopy "' + file + '" ' + newFile + ' /hqyi', function() {
+					socket.emit('sucess', JSON.stringify(obj));
+				});
+
+			} else if (obj) {
+				socket.emit('sucess', JSON.stringify(obj));
+			}
+
+		});
+	});
+
+	try {
+		server.listen(8124, function() {//'listening' listener
+
+		});
+		server.on('error', function(e) {
+			//console.log(e);
+		});
+
+	} catch (err) {
+		console.log(err);
+
+	};
 
 	socket.on('conectado', function() {
 
@@ -36,49 +95,50 @@ io.on('connection', function(socket) {
 		switch(msg.command) {
 		case 'addAndStart':
 			if ((msg.params) && (msg.params.noaudio)) {
-				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri, true, false));
+				vlcControl.addAndStart(msg.params.uri, true, false);
 			} else if ((msg.params) && (msg.params.novideo)) {
-				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri, false, true));
+				vlcControl.addAndStart(msg.params.uri, false, true);
 			} else {
-				socket.emit('sucess', vlcControl.addAndStart(msg.params.uri));
+				vlcControl.addAndStart(msg.params.uri);
 			}
 			break;
 		case 'addToPlaylist':
-			socket.emit('sucess', vlcControl.addToPlaylist(msg.params.uri));
+			vlcControl.addToPlaylist(msg.params.uri);
 			break;
 		case 'play':
 
 			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
-				socket.emit('sucess', vlcControl.play(msg.params.id));
+				vlcControl.play(msg.params.id);
 			} else {
-				socket.emit('sucess', vlcControl.play());
+				vlcControl.play();
+				//socket.emit('sucess', vlcControl.play());
 			}
 			break;
 		case 'pause':
 			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
-				socket.emit('sucess', vlcControl.pause(msg.params.id));
+				vlcControl.pause(msg.params.id);
 			} else {
-				socket.emit('sucess', vlcControl.pause());
+				vlcControl.pause();
 			}
 			break;
 		case 'forceResume':
-			socket.emit('sucess', vlcControl.forceResume());
+			vlcControl.forceResume();
 			break;
 		case 'forcePause':
-			socket.emit('sucess', vlcControl.forcePause());
+			vlcControl.forcePause();
 			break;
 		case 'stop':
-			socket.emit('sucess', vlcControl.stop());
+			vlcControl.stop();
 			break;
 		case 'next':
-			socket.emit('sucess', vlcControl.next());
+			vlcControl.next();
 			break;
 		case 'previous':
-			socket.emit('sucess', vlcControl.previous());
+			vlcControl.previous();
 			break;
 		case 'delete':
 			if ((msg.params) && (msg.params.id) && (msg.params.id > 0)) {
-				socket.emit('sucess', vlcControl.delete(msg.params.id));
+				vlcControl.delete(msg.params.id);
 			}
 			break;
 		default:

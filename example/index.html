@@ -20,9 +20,21 @@
 				socket.on('fault', function(msg) {
 					alert(msg);
 				});
-				
-				socket.on('sucess',function(msg){
-					console.log(msg);
+
+				socket.on('sucess', function(msg) {
+					//$('#info').text(msg);
+					var obj = JSON.parse(msg);
+
+					if ((obj) && (obj.information) && (obj.information.category) && (obj.information.category.meta) && (obj.information.category.meta.artwork_url)) {
+						$('#img').attr("src", obj.information.category.meta.artwork_url);
+						$('#artist').text('Artist: ' +obj.information.category.meta.artist);
+						$('#music').text('Music: ' + obj.information.category.meta.filename);
+					} else {
+						$('#artist').text('');
+						$('#music').text('');
+						$('#img').attr("src", '');
+					}
+
 				});
 
 				$('#play').click(function() {
@@ -40,6 +52,9 @@
 	</head>
 
 	<body>
+		<div id='artist'></div></br>
+		<div id='music'></div></br>
+		<img id='img' src=""/></br>
 		<button id='play'>
 			Play
 		</button>
