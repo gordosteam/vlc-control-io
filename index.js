@@ -46,11 +46,11 @@ io.on('connection', function(socket) {
 				}
 				obj.information.category.meta.artwork_url = '../imgs/' + filename;
 				require('child_process').exec('xcopy "' + file + '" ' + newFile + ' /hqyi', function() {
-					socket.emit('sucess', JSON.stringify(obj));
+					socket.broadcast.emit('sucess', JSON.stringify(obj));
 				});
 
 			} else if (obj) {
-				socket.emit('sucess', JSON.stringify(obj));
+				socket.broadcast.emit('sucess', JSON.stringify(obj));
 			}
 
 		});
