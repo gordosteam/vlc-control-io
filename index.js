@@ -3,6 +3,7 @@ var vlcControl = require('vlc-control-node');
 var io = require('socket.io')(http);
 var started = false;
 var net = require('net');
+var pathImgs = '';
 
 io.on('connection', function(socket) {
 	console.log('a user connected');
@@ -17,6 +18,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('cfg', function(msg) {
+		pathImgs = msg.pathImgs;
 		vlcControl.init({
 			ip : msg.ip,
 			port : msg.port,
@@ -56,7 +58,7 @@ io.on('connection', function(socket) {
 			// console.log(obj.information.category.meta.artwork_url.substring(8));
 			file = file.replace(/\//g, '\\');
 			file = file.replace(/%20/g, ' ');
-			var newFile = __dirname + '\\imgs\\';
+			var newFile = pathImgs;
 			//console.log(file);
 			//console.log(newFile);
 			if (file) {

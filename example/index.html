@@ -6,12 +6,12 @@
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		<script>
 			$(function() {
-				var socket = io('192.168.25.168:3500');
+				var socket = io('192.168.1.103:3500');
 
 				socket.on('conectado', function(msg) {
 					socket.emit('cfg', {
-						ip : '192.168.25.168',
-						port : 8081,
+						ip : '192.168.1.103',
+						port : 8080,
 						user : '',
 						password : 'asd123'
 					});
