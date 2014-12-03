@@ -3,6 +3,8 @@ vlc-control-io
 
 Control your VLC with Node. JS with socket.io + vlc-control-node module
 
+[![NPM](https://nodei.co/npm/vlc-control-io.png?downloads=true&downloadRank=true)](https://nodei.co/npm/vlc-control-io/)
+
 # Setup
 First you have to emit an IO from the client with the name of **cfg**.
 
